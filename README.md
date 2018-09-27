@@ -1,3 +1,3 @@
-# calorimetro
+# Calorimetro
 
 Proyecto Final Philips
