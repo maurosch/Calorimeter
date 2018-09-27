@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-8">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Temperatura en función del Tiempo</h3>
+            </div>
+            <div class="card-body">
+                <div id="canvas-holder" style="height:300px; margin:auto;">
+                    <canvas id="promedioChart"></canvas>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="../" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-4 align-self-center">
+        <div class="card">
+            <div class="card-body">
+                <div id="div1" class="row">
+                    <h6>Calor Específico = </h6><h6 id="calor_especifico_id"></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+        //40 COLORES
+        var default_colors = ['#3366CC','#DC3912','#FF9900','#109618','#990099','#3B3EAC','#0099C6','#DD4477','#66AA00','#B82E2E','#316395','#994499','#22AA99','#AAAA11','#6633CC','#E67300','#8B0707','#329262','#5574A6','#3B3EAC','#795548','#CDDC39','#00BCD4','#8BC34A','#FF5722','#FF9800','#4CAF50','#3F51B5','#673AB7','#03A9F4','#9C27B0','#BF360C','#64DD17','#A7FFEB','#7C4DFF','#9FA8DA','#EC407A','#FDD835','#BCAAA4','#E65100'];				
+        var ctx = document.getElementById("promedioChart").getContext("2d");;
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                    labels: [
+                    
+                       // "TR1 18", "TR2 18", "TR3 18",
+                        
+                    ],
+                    datasets: [
+                    {
+                        label: "Pieza",
+                        /*data:[
+                        7.38, 8, 5, 
+                        ],*/
+                        fill:false,
+                        backgroundColor: default_colors[25],
+                        borderColor: default_colors[25],
+                        lineTension:0.1,
+                        yAxisID:0,
+                    },
+                    {
+                        label: "Agua",
+                        fill:false,
+                        backgroundColor: default_colors[6],
+                        borderColor: default_colors[6],
+                        lineTension:0.1,
+                        yAxisID:0,
+                    }
+
+                    ]
+            },
+            options: {
+                legend: {
+                    display: true
+                },
+                
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                //stepValue: 1,
+                                //max: 10,
+                                //min: 4
+                            }
+                        }]
+                },
+            }
+        });
+        
+        $("#toggle").click(function() {
+            myChart.data.datasets.forEach(function(ds) {
+            ds.hidden = !ds.hidden;
+        });
+        myChart.update();
+        });
+
+        var ultimo = 30;
+        function addData(chart, label) {
+            chart.data.labels.push(label);
+            chart.data.datasets.forEach((dataset) => {
+                ultimo += Math.floor(Math.random() * Math.floor(3)) -1;
+                dataset.data.push( ultimo );
+            });
+            chart.update();
+        }
+
+        var temp_material_anterior = 0;
+        function updateCoefficient(cont){
+            var masa_agua = {{ configCalorimetro['DEFAULT']['masa_agua'] }}; //gramos
+            var masa_material = {{ configCalorimetro['DEFAULT']['masa_material'] }}; //gramos
+            var calor_especifico_agua = {{ configCalorimetro['DEFAULT']['calor_especifico_agua'] }} //jules/gramo °C
+            var temp_inicial_agua = {{ configCalorimetro['DEFAULT']['temp_inicial_agua'] }};
+            var temp_final_agua = myChart.data.datasets[1].data[cont];
+            var temp_inicial_material = {{ configCalorimetro['DEFAULT']['temp_inicial_material'] }};
+            var temp_final_material = myChart.data.datasets[0].data[cont];
+            var calor_especifico_pieza = masa_agua*calor_especifico_agua*(temp_final_agua-temp_inicial_agua)/((temp_inicial_material-temp_final_material)*masa_material)
+            
+            //VAMOS A TOMAR EL COEFICIENTE CUANDO LA TEMP DEL MATERIAL SEA LA MÁXIMA
+            if (temp_material_anterior < temp_final_material){
+                temp_material_anterior = temp_final_material;
+                document.getElementById("calor_especifico_id").innerHTML= calor_especifico_pieza.toFixed(2) + " J/gºC";
+            }
+            //( masa_agua . calor_especifico_agua . ΔTagua ) / ( ΔTmaterial . masa_material )
+        }
+
+        var cont = 0;
+        var contador = 0;
+        setInterval(function(){
+            cont += 0.5;      
+            if(cont<600){     
+                var mLabel = ""
+                if(cont % 10 == 0){
+                    mLabel = cont;
+                }
+                addData( myChart, mLabel);
+                updateCoefficient(contador);
+                contador += 1;
+            }
+            else return;
+            
+        }, 500);
+
+    </script>
+{% endblock %}

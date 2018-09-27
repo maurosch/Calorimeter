@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Datos Pasados
+{% endblock %}
+
+{% block content %}
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-12">
+        <div class="card card-primary">
+           <div class="card-header">
+                <h5 class="card-title">Experimentos Pasados</h5>
+            </div>
+            <div class="card-body">
+                {% for experimento in experimentos_pasados %}
+                <div style="margin: 10px">     
+                    <a href="{{ url_for('static', filename='plots_pdf/'+experimento+'.pdf') }}">{{experimento}} EN PDF</a></br>
+                    <a href="{{ url_for('static', filename='plots_csv/'+experimento+'.csv') }}">{{experimento}} EN CSV</a></br>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="card-footer">
+                <a href="../" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+        
+        
+    
+{% endblock %}
+
