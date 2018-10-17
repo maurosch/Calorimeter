@@ -7,13 +7,26 @@ from os import listdir
 from os.path import isfile, join
 from subprocess import Popen
 import subprocess
+import socket
 #from gpiozero import LED, Button
 
 app = Flask(__name__)
 
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
 @app.route('/')
 def inicio():
-    return render_template('index.html')
+    return render_template('index.html', ip_addr=get_ip())
 
 @app.route('/modos')
 def modos():
@@ -27,6 +40,25 @@ def start():
     configCalorimetro.read('config.txt')
     return render_template('grafico.html', configCalorimetro=configCalorimetro)
 
+@app.route('/startNewton')
+def startNewton():
+    configCalorimetro = configparser.ConfigParser()
+    configCalorimetro.read('config.txt')
+
+    if os.path.exists("lock") == False:
+        p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    else:
+        file = open("lock", "r")
+        text_file = file.read()
+        if text_file == "COEFICIENTE_CALORICO":
+            return redirect(url_for('start'))
+        if text_file == "COEFICIENTE_NEWTON":
+            return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
+        return render_template('error.html')
+                    
+    
+    
+    
 @app.route('/datos')
 def datos():
     mypath = 'static/plots_pdf/'
