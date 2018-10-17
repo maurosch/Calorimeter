@@ -44,19 +44,24 @@ def start():
 def startNewton():
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
-
-    if os.path.exists("lock") == False:
-        p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    else:
-        file = open("lock", "r")
-        text_file = file.read()
-        if text_file == "COEFICIENTE_CALORICO":
-            return redirect(url_for('start'))
-        if text_file == "COEFICIENTE_NEWTON":
-            return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
-        return render_template('error.html')
+    return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
+#    if os.path.exists("lock") == False:
+#        p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#    else:
+#        file = open("lock", "r")
+#        text_file = file.read()
+#        if text_file == "COEFICIENTE_CALORICO":
+#            return redirect(url_for('start'))
+#        if text_file == "COEFICIENTE_NEWTON":
+#            return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
+#        return render_template('error.html')
                     
-    
+@app.route('/data')
+def data():
+    file = open("temp_bloque", "r")
+    text_file = file.read()
+    file.close()
+    return render_template('data.html', data=text_file)
     
     
 @app.route('/datos')

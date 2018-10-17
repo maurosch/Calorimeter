@@ -9,8 +9,7 @@ if os.path.exists("lock") == False:
     
     #----------------EMPEZAMOS EL EXPERIMENTO----------------
     f = open("lock","w+")
-    f.write("ARCHIVO PARA INDICAR SI ESTA CALENTANDO")
-    f.write("COEFICIENTE_CALORICA")
+    f.write("COEFICIENTE_CALORICO")
     f.close
 
     #---PRENDEMOS LUZ DE CALIENTE---
