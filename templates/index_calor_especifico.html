@@ -13,34 +13,34 @@
                 <h5 class="card-title">Menú ({{ ip_addr }})</h5>
             </div>
             <div class="card-body">
-                <div class="row justify-content-center" style="margin-top: 36px;">
+                <div class="row justify-content-center" style="margin-top: 36px">
                     <div class="col-sm-6">
-                        <a href="{{ url_for('index_calentamiento') }}">
+                        <a href="{{ url_for('calor_especifico_start') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
-                                    Coeficiente de calor específico
+                                    Comenzar
                                 </h4>
                             </div>
                         </a>
                     </div>
                 </div>
-                <div class="row justify-content-center" style="margin-top: 61px;">
+                <div class="row justify-content-center" style="margin-top: 61px">
                     <div class="col-sm-6">
-                        <a href="{{ url_for('index_enfriamiento') }}">
+                        <a href="{{ url_for('calor_especifico_config') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
-                                    Coeficiente de enfriamiento de Newton
+                                    Configuración
                                 </h4>
                             </div>
                         </a>
                     </div>
                 </div>
-                <div class="row justify-content-center" style="margin-top: 61px; margin-bottom: 36px;">
+                <div class="row justify-content-center" style="margin-top: 61px; margin-bottom: 36px">
                     <div class="col-sm-6">
-                        <a href="{{ url_for('shutdown') }}">
+                        <a href="datos">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
-                                    Apagar
+                                    Resultados
                                 </h4>
                             </div>
                         </a>
