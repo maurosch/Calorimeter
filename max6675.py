@@ -98,6 +98,7 @@ class MAX6675Error(Exception):
      def __str__(self):
          return repr(self.value)
 
+'''
 if __name__ == "__main__":
     # default example
     cs_pin = 4
@@ -113,11 +114,6 @@ if __name__ == "__main__":
 		file = open("temp_bloque","w")
 		file.write(str(tc))
 		file.close()
-            except MAX6675Error as e:
-                tc = "Error: "+ e.value
-                running = False
-                print("tc: {}".format(tc))
-            time.sleep(0.5)
-        except KeyboardInterrupt:
-            running = False
+        time.sleep(0.5)
     thermocouple.cleanup()
+'''

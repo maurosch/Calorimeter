@@ -42,7 +42,7 @@ def calor_especifico_start():
 
 @app.route('/calor_especifico/resultados')
 def calor_especifico_resultados():
-    mypath = 'static/plots_pdf/'
+    mypath = 'static/plots_pdf/calor_especifico'
     experimentos_pasados = [f for f in listdir(mypath) if isfile(join(mypath, f))]
     for i in range(len(experimentos_pasados)):
         experimentos_pasados[i] = experimentos_pasados[i].split('.', 1)[0]
@@ -82,10 +82,28 @@ def enfriamiento_start():
 #            return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
 #        return render_template('error.html')
 
+@app.route('/enfriamiento/resultados')
+def enfriamiento_resultados():
+    mypath = 'static/plots_pdf/enfriamiento'
+    experimentos_pasados = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    for i in range(len(experimentos_pasados)):
+        experimentos_pasados[i] = experimentos_pasados[i].split('.', 1)[0]
+    return render_template('resultados.html', experimentos_pasados=experimentos_pasados)
 
+@app.route('/enfriamiento/config', methods=['POST', 'GET'])
+def enfriamiento_config():
+    text = ""
+    if request.method == 'POST':
+        config = configparser.ConfigParser()
+        config['DEFAULT'] = {'masa_agua': request.form['masa_agua'], 'masa_material': request.form['masa_material'], 'calor_especifico_agua': 4.186, 'temp_inicial_agua': request.form['temp_inicial_agua'], 'temp_inicial_material': request.form['temp_inicial_material']}
+        with open('config.txt', 'w') as configfile:
+            config.write(configfile)
+        text = "CONFIGURACIÓN GUARDADA"
+    
+    configCalorimetro = configparser.ConfigParser()
+    configCalorimetro.read('config.txt')
 
-
-
+    return render_template('config.html', text=text, configCalorimetro=configCalorimetro)
 
 @app.route('/shutdown')
 def shutdown():

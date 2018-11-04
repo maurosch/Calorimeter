@@ -10,12 +10,12 @@
     <div class="col-sm-12">
         <div class="card card-primary">
            <div class="card-header">
-                <h5 class="card-title">Menú ({{ ip_addr }})</h5>
+                <h5 class="card-title">Coeficiente Enfriamiento Newton ({{ ip_addr }})</h5>
             </div>
             <div class="card-body">
                 <div class="row justify-content-center" style="margin-top: 36px">
                     <div class="col-sm-6">
-                        <a href="start">
+                        <a href="{{ url_for('enfriamiento_start') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
                                     Comenzar
@@ -26,7 +26,7 @@
                 </div>
                 <div class="row justify-content-center" style="margin-top: 61px">
                     <div class="col-sm-6">
-                        <a href="config">
+                        <a href="{{ url_for('enfriamiento_config') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
                                     Configuración
@@ -37,7 +37,7 @@
                 </div>
                 <div class="row justify-content-center" style="margin-top: 61px; margin-bottom: 36px">
                     <div class="col-sm-6">
-                        <a href="datos">
+                        <a href="{{ url_for('enfriamiento_resultados') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
                                     Resultados
