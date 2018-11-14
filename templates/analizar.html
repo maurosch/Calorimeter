@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Inicio
+{% endblock %}
+
+{% block content %}
+<meta http-equiv="refresh" content="3;url={{url_for('enfriamiento_resultados')}}" />
+<div class="row justify-content-center">
+    <div class="col-sm-12">
+        <div class="card card-primary">
+            <div class="card-body">
+                <div class="row justify-content-center" style="margin-top: 36px; margin-bottom: 36px;">
+                    <div class="col-sm-6">
+                        <h4 >
+                            Analizando...
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

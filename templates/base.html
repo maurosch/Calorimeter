@@ -4,18 +4,18 @@
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{ url_for('static', filename='css/bootsrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/adminlte/adminlte.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.numpad.css') }}">
     
 </head>
-<script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/Chart.js') }}"></script>
-<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.numpad.js') }}"></script>
-<body class="hold-transition sidebar-mini">
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/Chart.js') }}"></script>
+<body class="hold-transition sidebar-mini" style="background:#f4f6f9;">
     <div class="wrapper">
     <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">

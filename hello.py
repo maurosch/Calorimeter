@@ -53,17 +53,8 @@ def index_enfriamiento():
 def enfriamiento_start():
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
-    return render_template('grafico.html', configCalorimetro=configCalorimetro)
-#    if os.path.exists("lock") == False:
-#        p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#    else:
-#        file = open("lock", "r")
-#        text_file = file.read()
-#        if text_file == "COEFICIENTE_CALORICO":
-#            return redirect(url_for('start'))
-#        if text_file == "COEFICIENTE_NEWTON":
-#            return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
-#        return render_template('error.html')
+    p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return render_template('grafico.html', configCalorimetro=configCalorimetro, ip_addr=get_ip())
 
 @app.route('/enfriamiento/resultados')
 def enfriamiento_resultados():
@@ -93,8 +84,7 @@ def enfriamiento_config():
 def terminarExperimento():
     file = open('terminar','w')
     file.close()    
-    return redirect('/enfriamiento/resultados')
-
+    return render_template('analizar.html')
 
 #--------------------PAGINAS CALORIMETRO (NO LAS USAMOS)--------------------
 '''

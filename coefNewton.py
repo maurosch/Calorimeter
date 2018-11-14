@@ -7,11 +7,9 @@ import max6675
 from random import randint
 import RPi.GPIO as GPIO
 
-def guardoTemp(a):
-    file = open("temp_bloque","w")
-	file.write(str(a))
-	file.close()
+#https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 
+'''
 def mayorAparicion(arreglo)
     mayor = 0
     for i in range(len(arreglo)):
@@ -29,11 +27,17 @@ def mayorAparicion(arreglo)
             mayorAparicionesIndex = i
     
     return mayorAparicionesIndex
+'''
+
+def obtenerTemp()
+    file = open('temp_term','r')
+    temp_str = file.read()
+    file.close()
+    return temp_str
 
 if os.path.exists("lock") == False:
     #----------------EMPEZAMOS EL EXPERIMENTO----------------
-    f = open("lock","w+")
-    f.write("COEFICIENTE_ENFRIAMENTO")
+    f = open("lock","w")
     f.close
 
     #---PRENDEMOS LUZ DE FUNCIONAMIENTO---
@@ -44,20 +48,25 @@ if os.path.exists("lock") == False:
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
     temp_inicial_material = configCalorimetro['DEFAULT']['temp_inicial_material']
+    temp_ambiente = configCalorimetro['DEFAULT']['temp_ambiente']
     
     #------INICIALIZAMOS TERMOMETRO------
-    cs_pin = 4
-    clock_pin = 24
-    data_pin = 25
-    units = "c"
-    thermocouple = MAX6675(cs_pin, clock_pin, data_pin, units)
+    #cs_pin = 4 #chip select
+    #clock_pin = 24
+    #data_pin = 25
+    #units = "c"
+    #thermocouple = MAX6675(cs_pin, clock_pin, data_pin, units)
     #------------------------------------
 
     #----------CALENTAMOS PIEZA----------
-    tc = thermocouple.get()
-    while tc < temp_inicial_material and tc < 200 and os.path.exists("terminar") == False:
-        tc = thermocouple.get()
-        guardoTemp(tc)
+    #tc = thermocouple.get()
+    file = open('temp_term','r')
+    temp_str = file.read()
+    file.close() 
+    while int(temp_str) < temp_inicial_material and int(temp_str) < 200 and os.path.exists("terminar") == False:
+        #tc = thermocouple.get()
+        #guardoTemp(tc)
+        temp_str = obtenerTemp()
         time.sleep(0.5)
     #------------------------------------
 
@@ -66,20 +75,12 @@ if os.path.exists("lock") == False:
     #temp_ambiente = []
     temp_material = []
     while os.path.exists("terminar") == False: 
-        tc = thermocouple.get()
-        guardoTemp(tc)
-        time.sleep(0.5)
-        temp_material.append(tc)
+        temp_str = obtenerTemp()
+        temp_material.append(int(temp_str))
         ejeTiempo.append(time.time()-tiempoInicio)
+        time.sleep(0.5)
 
-    #GPIO.output(19, GPIO.LOW)
-
-    #CALCULAMOS COEFICIENTE NEWTON
-    #coefNewton = np.log(Tinicial-Tamb)/t
-
-    #Tomamos como temperatur ambiente la temperatura con mayor aparicion
     tiempoTranscurrido = time.time() - tiempoInicio
-    #temp_ambiente = mayorAparicion(temp_material)
     coefEnfriamiento = np.log(temp_inicial-temp_ambiente) / tiempoTranscurrido
 
     #GUARDAMOS DATOS
@@ -91,7 +92,7 @@ if os.path.exists("lock") == False:
     plot.get_figure().savefig('static/plots_pdf/enfriamiento/'+nombre+'.pdf', format='pdf')
     #----------------TERMINAMOS EL EXPERIMENTO----------------
     
-    thermocouple.cleanup()
+    #thermocouple.cleanup()
     os.remove("lock")
 
 #CALCULAMOS COEFICIENTE ENFRIAMENTO NEWTON
