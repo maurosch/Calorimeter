@@ -15,31 +15,6 @@
                 
                 <form action="config" method="POST">
                     <div class="form-group row justify-content-center">
-                        <label class="col-10 col-form-label row align-items-end"><h5>Masa de la Pieza</h5>
-                            <small class="text-muted">(max: definir)</small></label>
-                        <div class="col-2">
-                            <div class="input-group mb-3">
-                                <input type="text" name="masa_material" id="masa_material" value="{{configCalorimetro['DEFAULT']['masa_material']}}">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">g</span>
-                                </div> 
-                            </div>
-                        </div>
-                    </div>    
-                    <div class="form-group row justify-content-center">
-                        <label class="col-10 col-form-label row align-items-end"><h5>Masa del Agua</h5>
-                            <small class="text-muted">(max: 500g)</small></label>
-                        <div class="col-2">
-                            <div class="input-group mb-3">
-                                <input type="text" name="masa_agua" id="masa_agua" value="{{configCalorimetro['DEFAULT']['masa_agua']}}">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">g</span>
-                                </div> 
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group row justify-content-center">
                         <label class="col-10 col-form-label row align-items-end"><h5>Temperatura inicial de la Pieza</h5>
                             <small class="text-muted">(0ºC - 200ºC)</small></label>
                         <div class="col-2">
@@ -49,19 +24,6 @@
                                     <span class="input-group-text">ºC</span>
                                 </div> 
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group row justify-content-center"  style=" margin-bottom: 27px">
-                        <label class="col-10 col-form-label row align-items-end"><h5>Temperatura inicial del Agua</h5>
-                            <small class="text-muted">(0ºC - 80ºC)</small></label>
-                        <div class="col-2">
-                            <div class="input-group mb-3">
-                                <input type="text" name="temp_inicial_agua" id="temp_inicial_agua" value="{{configCalorimetro['DEFAULT']['temp_inicial_agua']}}">                                
-                                <div class="input-group-append">
-                                    <span class="input-group-text">ºC</span>
-                                </div>   
-                            </div>                                            
                         </div>
                     </div>
                 </div>
@@ -87,10 +49,7 @@
 		
 		// Instantiate NumPad once the page is ready to be shown
 		$(document).ready(function(){
-            $('#masa_material').numpad();
-            $('#masa_agua').numpad();
             $('#temp_inicial_material').numpad();
-			$('#temp_inicial_agua').numpad();
         });
 	});
 </script>

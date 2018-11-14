@@ -1,7 +1,0 @@
-[DEFAULT]
-masa_agua = 100
-masa_material = 100
-calor_especifico_agua = 4.186
-temp_inicial_agua = 100
-temp_inicial_material = 100
-

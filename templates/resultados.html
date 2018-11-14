@@ -14,12 +14,16 @@
                 <h5 class="card-title">Experimentos Pasados</h5>
             </div>
             <div class="card-body">
-                {% for experimento in experimentos_pasados %}
-                <div style="margin: 10px">     
-                    <a href="{{ url_for('static', filename='plots_pdf/'+experimento+'.pdf') }}">{{experimento}} EN PDF</a></br>
-                    <a href="{{ url_for('static', filename='plots_csv/'+experimento+'.csv') }}">{{experimento}} EN CSV</a></br>
-                </div>
-                {% endfor %}
+                <ul>
+                    {% for experimento in experimentos_pasados %}
+                    <li> {{experimento}}
+                    <div style="margin: 10px">     
+                        <a href="{{ url_for('static', filename='plots_pdf/enfriamiento/'+experimento+'.pdf') }}">PDF</a></br>
+                        <a href="{{ url_for('static', filename='plots_csv/enfriamiento/'+experimento+'.csv') }}">CSV</a></br>
+                    </div>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="card-footer">
                 <a href="../" class="btn btn-secondary">Volver</a>

@@ -5,7 +5,7 @@
     <div class="col-8">
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">Temperatura en función del Tiempo</h3>
+                <h3 class="card-title">Cálculo Coeficiente Newton - Temperatura vs Tiempo del Bloque</h3>
             </div>
             <div class="card-body">
                 <div id="canvas-holder" style="height:300px; margin:auto;">
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="../" class="btn btn-secondary">Volver</a>
+                <a href="{{ url_for('terminarExperimento') }}" class="btn btn-secondary">Terminar Experimento</a>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
         <div class="card">
             <div class="card-body">
                 <div id="div1" class="row">
-                    <h6>Calor Específico = </h6><h6 id="calor_especifico_id"></h6>
+                    <h6>Coeficiente Enfriamento Newton = </h6><h6 id="coeficiente_newton_id"></h6>
                 </div>
             </div>
         </div>
@@ -36,28 +36,13 @@
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                    labels: [
-                    
-                       // "TR1 18", "TR2 18", "TR3 18",
-                        
-                    ],
+                    labels: [],
                     datasets: [
                     {
-                        label: "Pieza",
-                        /*data:[
-                        7.38, 8, 5, 
-                        ],*/
+                        label: "Temperatura Pieza",
                         fill:false,
                         backgroundColor: default_colors[25],
                         borderColor: default_colors[25],
-                        lineTension:0.1,
-                        yAxisID:0,
-                    },
-                    {
-                        label: "Agua",
-                        fill:false,
-                        backgroundColor: default_colors[6],
-                        borderColor: default_colors[6],
                         lineTension:0.1,
                         yAxisID:0,
                     }
@@ -76,9 +61,6 @@
                             display: true,
                             ticks: {
                                 beginAtZero: true,
-                                //stepValue: 1,
-                                //max: 10,
-                                //min: 4
                             }
                         }]
                 },
@@ -93,40 +75,55 @@
         myChart.update();
         });
 
-        var ultimo = 30;
+        
+        var tiempo = Date.now();
         function addData(chart, label) {
             chart.data.labels.push(label);
             chart.data.datasets.forEach((dataset) => {
-                ultimo += Math.floor(Math.random() * Math.floor(3)) -1;
-                dataset.data.push( ultimo );
+                //var agregar = (1000/((Date.now()-tiempo) / 1000))+25;
+                var agregar = 0;
+                $.get("data", function(result){
+                    dataset.data.push( result );
+                });
+                //ultimo += Math.floor(Math.random() * Math.floor(3)) -1;
+                //dataset.data.push( agregar );
             });
             chart.update();
         }
 
         var temp_material_anterior = 0;
         function updateCoefficient(cont){
-            var masa_agua = {{ configCalorimetro['DEFAULT']['masa_agua'] }}; //gramos
-            var masa_material = {{ configCalorimetro['DEFAULT']['masa_material'] }}; //gramos
-            var calor_especifico_agua = {{ configCalorimetro['DEFAULT']['calor_especifico_agua'] }} //jules/gramo °C
-            var temp_inicial_agua = {{ configCalorimetro['DEFAULT']['temp_inicial_agua'] }};
-            var temp_final_agua = myChart.data.datasets[1].data[cont];
             var temp_inicial_material = {{ configCalorimetro['DEFAULT']['temp_inicial_material'] }};
             var temp_final_material = myChart.data.datasets[0].data[cont];
-            var calor_especifico_pieza = masa_agua*calor_especifico_agua*(temp_final_agua-temp_inicial_agua)/((temp_inicial_material-temp_final_material)*masa_material)
-            
-            //VAMOS A TOMAR EL COEFICIENTE CUANDO LA TEMP DEL MATERIAL SEA LA MÁXIMA
-            if (temp_material_anterior < temp_final_material){
-                temp_material_anterior = temp_final_material;
-                document.getElementById("calor_especifico_id").innerHTML= calor_especifico_pieza.toFixed(2) + " J/gºC";
+
+            var coeficiente_newton = Math.log((temp_inicial_material-temp_ambiente)/(temp_final_material-temp_ambiente))/((Date.now()-tiempo)/1000);
+                    
+            document.getElementById("coeficiente_newton_id").innerHTML= coeficiente_newton.toFixed(2) + " s<sup>-1</sup>";
+        }
+
+        var pause = false;
+        function pausarExperimento(){
+            if(pause == false)
+            {
+                pause = true;
+                document.getElementById("boton_pausa").innerHTML= "Reanudar";
             }
-            //( masa_agua . calor_especifico_agua . ΔTagua ) / ( ΔTmaterial . masa_material )
+            else
+            {
+                pause = false;
+                document.getElementById("boton_pausa").innerHTML= "Pausar";
+            }
         }
 
         var cont = 0;
         var contador = 0;
         setInterval(function(){
+            if(cont > 216000)
+            {
+                location.reload();
+            }
             cont += 0.5;      
-            if(cont<600){     
+            if(pause == false){     
                 var mLabel = ""
                 if(cont % 10 == 0){
                     mLabel = cont;
@@ -138,6 +135,5 @@
             else return;
             
         }, 500);
-
     </script>
 {% endblock %}

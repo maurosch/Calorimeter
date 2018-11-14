@@ -12,6 +12,7 @@ import socket
 
 app = Flask(__name__)
 
+#---------------FUNCION PARA OBTENER LA IP LOCAL---------------
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -23,11 +24,14 @@ def get_ip():
     finally:
         s.close()
     return IP
+#--------------------------------------------------------------
 
 @app.route('/')
 def inicio():
     return render_template('index.html', ip_addr=get_ip())
 
+#--------------------PAGINAS CALORIMETRO (NO LAS USAMOS)--------------------
+'''
 @app.route('/calor_especifico')
 def index_calentamiento():
     return render_template('index_calor_especifico.html', ip_addr=get_ip())
@@ -58,7 +62,8 @@ def calor_especifico_config():
             config.write(configfile)
         text = "CONFIGURACIÓN GUARDADA"
     return render_template('config.html', text=text)
-
+'''
+#---------------------------------------------------------------------------
 
 # --------------------------ENFRIAMIENTO--------------------------
 
@@ -70,7 +75,7 @@ def index_enfriamiento():
 def enfriamiento_start():
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
-    return render_template('graficoNewton.html', configCalorimetro=configCalorimetro)
+    return render_template('grafico.html', configCalorimetro=configCalorimetro)
 #    if os.path.exists("lock") == False:
 #        p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 #    else:
@@ -95,7 +100,7 @@ def enfriamiento_config():
     text = ""
     if request.method == 'POST':
         config = configparser.ConfigParser()
-        config['DEFAULT'] = {'masa_agua': request.form['masa_agua'], 'masa_material': request.form['masa_material'], 'calor_especifico_agua': 4.186, 'temp_inicial_agua': request.form['temp_inicial_agua'], 'temp_inicial_material': request.form['temp_inicial_material']}
+        config['DEFAULT'] = {'temp_inicial_material': request.form['temp_inicial_material']}
         with open('config.txt', 'w') as configfile:
             config.write(configfile)
         text = "CONFIGURACIÓN GUARDADA"
@@ -105,6 +110,14 @@ def enfriamiento_config():
 
     return render_template('config.html', text=text, configCalorimetro=configCalorimetro)
 
+
+@app.route('/terminarExperimento')
+def terminarExperimento():
+    file = open('terminar','w')
+    file.close()
+    
+
 @app.route('/shutdown')
 def shutdown():
+    os.system("sudo shutdown -h now")
     return "APAGADO"
