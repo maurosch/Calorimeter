@@ -14,16 +14,16 @@ def guardoTemp(a):
 
 def mayorAparicion(arreglo)
     mayor = 0
-    for i in range(arreglo.size()):
+    for i in range(len(arreglo)):
         if arreglo[i] > mayor:
             mayor = arreglo[i]
     contArreglo = [0]*(mayor+1)
-    for i in range(arreglo.size()):
+    for i in range(len(arreglo)):
         contArreglo[arreglo] += 1
 
     mayorAparicionesCant = -1
     mayorAparicionesIndex = -1
-    for i in range(contArreglo.size()):
+    for i in range(len(contArreglo)):
         if mayorAparicionesCant < contArreglo[i]:
             mayorAparicionesCant = contArreglo[i]
             mayorAparicionesIndex = i
@@ -62,7 +62,7 @@ if os.path.exists("lock") == False:
     #------------------------------------
 
     #---EMPEZAMOS EXPERIMENTO---
-    start = time.time()
+    tiempoInicio = time.time()
     #temp_ambiente = []
     temp_material = []
     while os.path.exists("terminar") == False: 
@@ -70,6 +70,7 @@ if os.path.exists("lock") == False:
         guardoTemp(tc)
         time.sleep(0.5)
         temp_material.append(tc)
+        ejeTiempo.append(time.time()-tiempoInicio)
 
     #GPIO.output(19, GPIO.LOW)
 
@@ -77,11 +78,12 @@ if os.path.exists("lock") == False:
     #coefNewton = np.log(Tinicial-Tamb)/t
 
     #Tomamos como temperatur ambiente la temperatura con mayor aparicion
-    temp_ambiente = mayorAparicion(temp_material)
-    coefEnfriamiento = np.log(temp_inicial_material-temp_ambiente)/t
+    tiempoTranscurrido = time.time() - tiempoInicio
+    #temp_ambiente = mayorAparicion(temp_material)
+    coefEnfriamiento = np.log(temp_inicial-temp_ambiente) / tiempoTranscurrido
 
     #GUARDAMOS DATOS
-    df = pd.DataFrame({'Temperatura Material':temp_material})
+    df = pd.DataFrame({'Temperatura Material':temp_material}, ejeTiempo)
     nombre = datetime.datetime.now().strftime ("%Y-%m-%d %H-%M")
     df.to_csv('static/plots_csv/enfriamiento/'+nombre+".csv")
     plot = df.plot(style="*-")

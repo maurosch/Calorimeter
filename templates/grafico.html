@@ -82,7 +82,7 @@
             chart.data.datasets.forEach((dataset) => {
                 //var agregar = (1000/((Date.now()-tiempo) / 1000))+25;
                 var agregar = 0;
-                $.get("data", function(result){
+                $.get("{{url_for('temp_term')}}", function(result){
                     dataset.data.push( result );
                 });
                 //ultimo += Math.floor(Math.random() * Math.floor(3)) -1;

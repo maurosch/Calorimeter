@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import redirect
 import configparser
 import os
 from os import listdir
@@ -30,40 +31,17 @@ def get_ip():
 def inicio():
     return render_template('index.html', ip_addr=get_ip())
 
-#--------------------PAGINAS CALORIMETRO (NO LAS USAMOS)--------------------
-'''
-@app.route('/calor_especifico')
-def index_calentamiento():
-    return render_template('index_calor_especifico.html', ip_addr=get_ip())
+@app.route('/shutdown')
+def shutdown():
+    os.system("sudo shutdown -h now")
+    return "APAGADO"
 
-@app.route('/calor_especifico/start')
-def calor_especifico_start():
-    if os.path.exists("lock") == False:
-        p = subprocess.Popen(["python", 'calentar.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    configCalorimetro = configparser.ConfigParser()
-    configCalorimetro.read('config.txt')
-    return render_template('grafico.html', configCalorimetro=configCalorimetro)
-
-@app.route('/calor_especifico/resultados')
-def calor_especifico_resultados():
-    mypath = 'static/plots_pdf/calor_especifico'
-    experimentos_pasados = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-    for i in range(len(experimentos_pasados)):
-        experimentos_pasados[i] = experimentos_pasados[i].split('.', 1)[0]
-    return render_template('resultados.html', experimentos_pasados=experimentos_pasados)
-
-@app.route('/calor_especifico/config', methods=['POST', 'GET'])
-def calor_especifico_config():
-    text = ""
-    if request.method == 'POST':
-        config = configparser.ConfigParser()
-        config['DEFAULT'] = {'masa_agua': request.form['masa_agua'], 'masa_material': request.form['masa_material'], 'calor_especifico_agua': 4.186, 'temp_inicial_agua': request.form['temp_inicial_agua'], 'temp_inicial_material': request.form['temp_inicial_material']}
-        with open('config.txt', 'w') as configfile:
-            config.write(configfile)
-        text = "CONFIGURACIÓN GUARDADA"
-    return render_template('config.html', text=text)
-'''
-#---------------------------------------------------------------------------
+@app.route('/temp_term')
+def temp_term():
+    file = open('temp_term','r')
+    temp_str = file.read()
+    file.close() 
+    return temp_str
 
 # --------------------------ENFRIAMIENTO--------------------------
 
@@ -114,10 +92,41 @@ def enfriamiento_config():
 @app.route('/terminarExperimento')
 def terminarExperimento():
     file = open('terminar','w')
-    file.close()
-    
+    file.close()    
+    return redirect('/enfriamiento/resultados')
 
-@app.route('/shutdown')
-def shutdown():
-    os.system("sudo shutdown -h now")
-    return "APAGADO"
+
+#--------------------PAGINAS CALORIMETRO (NO LAS USAMOS)--------------------
+'''
+@app.route('/calor_especifico')
+def index_calentamiento():
+    return render_template('index_calor_especifico.html', ip_addr=get_ip())
+
+@app.route('/calor_especifico/start')
+def calor_especifico_start():
+    if os.path.exists("lock") == False:
+        p = subprocess.Popen(["python", 'calentar.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    configCalorimetro = configparser.ConfigParser()
+    configCalorimetro.read('config.txt')
+    return render_template('grafico.html', configCalorimetro=configCalorimetro)
+
+@app.route('/calor_especifico/resultados')
+def calor_especifico_resultados():
+    mypath = 'static/plots_pdf/calor_especifico'
+    experimentos_pasados = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    for i in range(len(experimentos_pasados)):
+        experimentos_pasados[i] = experimentos_pasados[i].split('.', 1)[0]
+    return render_template('resultados.html', experimentos_pasados=experimentos_pasados)
+
+@app.route('/calor_especifico/config', methods=['POST', 'GET'])
+def calor_especifico_config():
+    text = ""
+    if request.method == 'POST':
+        config = configparser.ConfigParser()
+        config['DEFAULT'] = {'masa_agua': request.form['masa_agua'], 'masa_material': request.form['masa_material'], 'calor_especifico_agua': 4.186, 'temp_inicial_agua': request.form['temp_inicial_agua'], 'temp_inicial_material': request.form['temp_inicial_material']}
+        with open('config.txt', 'w') as configfile:
+            config.write(configfile)
+        text = "CONFIGURACIÓN GUARDADA"
+    return render_template('config.html', text=text)
+'''
+#---------------------------------------------------------------------------
