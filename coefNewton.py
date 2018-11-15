@@ -40,11 +40,6 @@ if os.path.exists("lock") == False:
     f = open("lock","w")
     f.close
 
-    #---PRENDEMOS LUZ DE FUNCIONAMIENTO---
-    GPIO.setmode(GPIO.BCM) 
-    GPIO.setup(19, GPIO.OUT)
-    GPIO.output(19, GPIO.HIGH)
-
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
     temp_inicial_material = configCalorimetro['DEFAULT']['temp_inicial_material']

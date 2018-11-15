@@ -46,7 +46,6 @@ while True:
                 GPIO.output(led_3, GPIO.HIGH)
                 if tc > 80:
                     GPIO.output(led_4, GPIO.HIGH)
-
 thermocouple.cleanup()
 
 
