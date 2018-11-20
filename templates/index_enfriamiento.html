@@ -10,12 +10,12 @@
     <div class="col-sm-12">
         <div class="card card-primary">
            <div class="card-header">
-                <h5 class="card-title">Coeficiente Enfriamiento Newton ({{ ip_addr }})</h5>
+                <h5 class="card-title">Coeficiente Enfriamiento Newton</h5>
             </div>
             <div class="card-body">
                 <div class="row justify-content-center" style="margin-top: 36px">
                     <div class="col-sm-6">
-                        <a href="{{ url_for('enfriamiento_start') }}">
+                        <a href="{{ url_for('enfriamiento_config') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
                                     Comenzar
@@ -24,12 +24,12 @@
                         </a>
                     </div>
                 </div>
-                <div class="row justify-content-center" style="margin-top: 61px">
+                <div class="row justify-content-center" style="margin-top: 61px;">
                     <div class="col-sm-6">
-                        <a href="{{ url_for('enfriamiento_config') }}">
+                        <a href="{{ url_for('enfriamiento_resultados') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
-                                    Configuración
+                                    Resultados Pasados
                                 </h4>
                             </div>
                         </a>
@@ -37,10 +37,10 @@
                 </div>
                 <div class="row justify-content-center" style="margin-top: 61px; margin-bottom: 36px">
                     <div class="col-sm-6">
-                        <a href="{{ url_for('enfriamiento_resultados') }}">
+                        <a href="{{ url_for('shutdown') }}">
                             <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
-                                    Resultados
+                                    Apagar
                                 </h4>
                             </div>
                         </a>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="../" class="btn btn-secondary">Volver</a>
+                <div class="float-right">Creado por Schiavinato y Zincosky</div>
             </div>
         </div>
     </div>

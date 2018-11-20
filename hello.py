@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import redirect
+from flask import url_for
 import configparser
 import os
 from os import listdir
@@ -29,7 +30,7 @@ def get_ip():
 
 @app.route('/')
 def inicio():
-    return render_template('index.html', ip_addr=get_ip())
+    return redirect(url_for('index_enfriamiento'))
 
 @app.route('/shutdown')
 def shutdown():
@@ -69,10 +70,10 @@ def enfriamiento_config():
     text = ""
     if request.method == 'POST':
         config = configparser.ConfigParser()
-        config['DEFAULT'] = {'temp_inicial_material': request.form['temp_inicial_material']}
+        config['DEFAULT'] = {'temp_inicial_material': request.form['temp_inicial_material'], 'temp_ambiente':request.form['temp_ambiente']}
         with open('config.txt', 'w') as configfile:
             config.write(configfile)
-        text = "CONFIGURACIÓN GUARDADA"
+        return redirect(url_for('enfriamiento_start'))
     
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')

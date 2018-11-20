@@ -9,26 +9,6 @@ import RPi.GPIO as GPIO
 
 #https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 
-'''
-def mayorAparicion(arreglo)
-    mayor = 0
-    for i in range(len(arreglo)):
-        if arreglo[i] > mayor:
-            mayor = arreglo[i]
-    contArreglo = [0]*(mayor+1)
-    for i in range(len(arreglo)):
-        contArreglo[arreglo] += 1
-
-    mayorAparicionesCant = -1
-    mayorAparicionesIndex = -1
-    for i in range(len(contArreglo)):
-        if mayorAparicionesCant < contArreglo[i]:
-            mayorAparicionesCant = contArreglo[i]
-            mayorAparicionesIndex = i
-    
-    return mayorAparicionesIndex
-'''
-
 def obtenerTemp()
     file = open('temp_term','r')
     temp_str = file.read()
@@ -58,11 +38,21 @@ if os.path.exists("lock") == False:
     file = open('temp_term','r')
     temp_str = file.read()
     file.close() 
+
+    relayNumberIN = 27
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(relayNumberIN, GPIO.OUT)
+
+    if int(temp_str) < temp_inicial_material:
+        GPIO.output(relayNumberIN, True)
+
     while int(temp_str) < temp_inicial_material and int(temp_str) < 200 and os.path.exists("terminar") == False:
         #tc = thermocouple.get()
         #guardoTemp(tc)
         temp_str = obtenerTemp()
         time.sleep(0.5)
+
+    GPIO.output(relayNumberIN, False)
     #------------------------------------
 
     #---EMPEZAMOS EXPERIMENTO---
