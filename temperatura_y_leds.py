@@ -8,9 +8,9 @@ from random import randint
 import RPi.GPIO as GPIO
 
 #------INICIALIZAMOS TERMOMETRO------
-cs_pin = 4 #chip select
-clock_pin = 24
-data_pin = 25
+cs_pin = 27 #chip select
+clock_pin = 17
+data_pin = 22
 units = "c"
 GPIO.setmode(GPIO.BCM) 
 thermocouple = MAX6675(cs_pin, clock_pin, data_pin, units)
