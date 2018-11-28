@@ -3,6 +3,7 @@ import time
 import numpy
 from max6675 import MAX6675
 import RPi.GPIO as GPIO
+import os
 
 os.remove("~/calorimetro/lock")
 os.remove("~/calorimetro/terminar")
