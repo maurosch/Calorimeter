@@ -1,4 +1,4 @@
-import os.path
+import os
 import pandas as pd
 import datetime
 import time
@@ -59,11 +59,11 @@ if os.path.exists("lock") == False:
     #---EMPEZAMOS EXPERIMENTO---
     tiempoInicio = time.time()
     #temp_ambiente = []
-    temp_material = []
+    temp_material = []  
     ejeTiempo = []
     while os.path.exists("terminar") == False: 
         temp_str = obtenerTemp()
-        temp_material.append(int(temp_str))
+        temp_material.append(float(temp_str))
         ejeTiempo.append(time.time()-tiempoInicio)
         time.sleep(0.5)
 
@@ -74,7 +74,7 @@ if os.path.exists("lock") == False:
     df = pd.DataFrame({'Temperatura Material':temp_material}, ejeTiempo)
     nombre = datetime.datetime.now().strftime ("%Y-%m-%d %H-%M")
     df.to_csv('static/plots_csv/enfriamiento/'+nombre+".csv")
-    plot = df.plot(style="*-")
+    plot = df.plot(style="*-", ylim={0,200})
     #plot.annotate('Calor Especifico', xy=(-12, -12), xycoords='axes points', size=14, ha='right', va='top', bbox=dict(boxstyle='round', fc='w'))
     plot.get_figure().savefig('static/plots_pdf/enfriamiento/'+nombre+'.pdf', format='pdf')
     #----------------TERMINAMOS EL EXPERIMENTO----------------

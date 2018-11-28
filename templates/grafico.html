@@ -59,6 +59,7 @@
                 scales: {
                     yAxes: [{
                             display: true,
+                            position: 'right',
                             ticks: {
                                 beginAtZero: true,
                             }
@@ -69,12 +70,12 @@
             }
         });
         
-        $("#toggle").click(function() {
+        /*$("#toggle").click(function() {
             myChart.data.datasets.forEach(function(ds) {
             ds.hidden = !ds.hidden;
         });
         myChart.update();
-        });
+        });*/
 
         
         var tiempo = Date.now();
@@ -97,17 +98,17 @@
         }
 
         setInterval(function(){                
-	$.get("{{url_for('temp_term')}}", function(result){
-		if(result != 0){
-		updateCoefficient( result );
-		var mLabel = "";
-		var tiempoAux = Math.floor((Date.now()-tiempo)/1000);
-		if(tiempoAux % 15 == 0){
-			mLabel = tiempoAux/60;
-		}
-		addData(myChart, mLabel, result);
-		}
-		});                
+	        $.get("{{url_for('temp_term')}}", function(result){
+                if(result != 0){
+                    updateCoefficient( result );
+                    var mLabel = "";
+                var tiempoAux = Math.round((Date.now()-tiempo)/1000);
+                if(tiempoAux % 15 == 0){
+                    mLabel = tiempoAux/60;
+                }
+		        addData(myChart, mLabel, result);
+		    }
+		    });                
         }, 500);
     </script>
 {% endblock %}

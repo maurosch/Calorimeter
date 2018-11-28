@@ -6,27 +6,18 @@
 {% endblock %}
 
 {% block content %}
-<style>
-.sombra
-{
-	box-shadow: 0px 9px #999;
-}
-.sombra:active {
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-</style>
+
 <div class="row justify-content-center">
     <div class="col-sm-12">
         <div class="card card-primary">
            <div class="card-header">
-                <h5 class="card-title">Coeficiente Enfriamiento Newton</h5>
+                <h5 class="card-title">Coeficiente de Enfriamiento de Newton</h5>
             </div>
             <div class="card-body">
-                <div class="row justify-content-center" style="margin-top: 36px">
+                <div class="row justify-content-center" style="margin-top: 24px">
                     <div class="col-sm-6">
                         <a href="{{ url_for('enfriamiento_config') }}">
-                            <div class="btn btn-block btn-primary btn-lg sombra">
+                            <div class="btn btn-block btn-primary btn-lg">
                                 <h4 >
                                     Comenzar
                                 </h4>
@@ -34,7 +25,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="row justify-content-center" style="margin-top: 61px;">
+                <div class="row justify-content-center" style="margin-top: 51px;">
                     <div class="col-sm-6">
                         <a href="{{ url_for('enfriamiento_resultados') }}">
                             <div class="btn btn-block btn-primary btn-lg">
@@ -45,7 +36,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="row justify-content-center" style="margin-top: 61px; margin-bottom: 36px">
+                <div class="row justify-content-center" style="margin-top: 51px; margin-bottom: 24px">
                     <div class="col-sm-6">
                         <a href="{{ url_for('shutdown') }}">
                             <div class="btn btn-block btn-primary btn-lg">

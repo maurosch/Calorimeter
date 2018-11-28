@@ -1,4 +1,4 @@
 [DEFAULT]
-temp_ambiente = 35.75
 temp_inicial_material = 40
+temp_ambiente = 35.75
 
