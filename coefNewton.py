@@ -3,17 +3,20 @@ import pandas as pd
 import datetime
 import time
 import numpy
+from math import log
 import max6675
 from random import randint
 import RPi.GPIO as GPIO
+import configparser
 
 #https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 
-def obtenerTemp()
+def obtenerTemp():
     file = open('temp_term','r')
     temp_str = file.read()
     file.close()
-    return temp_str
+    return float(temp_str)
+
 
 if os.path.exists("lock") == False:
     #----------------EMPEZAMOS EL EXPERIMENTO----------------
@@ -23,7 +26,9 @@ if os.path.exists("lock") == False:
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
     temp_inicial_material = configCalorimetro['DEFAULT']['temp_inicial_material']
+    temp_inicial_material = float(temp_inicial_material)
     temp_ambiente = configCalorimetro['DEFAULT']['temp_ambiente']
+    temp_ambiente = float(temp_ambiente)
     
     #------INICIALIZAMOS TERMOMETRO------
     #cs_pin = 4 #chip select
@@ -35,30 +40,27 @@ if os.path.exists("lock") == False:
 
     #----------CALENTAMOS PIEZA----------
     #tc = thermocouple.get()
-    file = open('temp_term','r')
-    temp_str = file.read()
-    file.close() 
+    temp_str = obtenerTemp()
 
-    relayNumberIN = 27
+    relayNumberIN = 18
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(relayNumberIN, GPIO.OUT)
 
-    if int(temp_str) < temp_inicial_material:
-        GPIO.output(relayNumberIN, True)
+    if temp_str < temp_inicial_material:
+        GPIO.output(relayNumberIN, GPIO.LOW)
 
-    while int(temp_str) < temp_inicial_material and int(temp_str) < 200 and os.path.exists("terminar") == False:
-        #tc = thermocouple.get()
-        #guardoTemp(tc)
+    while temp_str < temp_inicial_material and temp_str < 200 and os.path.exists("terminar") == False:
         temp_str = obtenerTemp()
         time.sleep(0.5)
 
-    GPIO.output(relayNumberIN, False)
+    GPIO.setup(relayNumberIN, GPIO.IN)
     #------------------------------------
 
     #---EMPEZAMOS EXPERIMENTO---
     tiempoInicio = time.time()
     #temp_ambiente = []
     temp_material = []
+    ejeTiempo = []
     while os.path.exists("terminar") == False: 
         temp_str = obtenerTemp()
         temp_material.append(int(temp_str))
@@ -66,7 +68,7 @@ if os.path.exists("lock") == False:
         time.sleep(0.5)
 
     tiempoTranscurrido = time.time() - tiempoInicio
-    coefEnfriamiento = np.log(temp_inicial-temp_ambiente) / tiempoTranscurrido
+    coefEnfriamiento = log(temp_inicial_material-temp_ambiente) / tiempoTranscurrido
 
     #GUARDAMOS DATOS
     df = pd.DataFrame({'Temperatura Material':temp_material}, ejeTiempo)
@@ -79,6 +81,7 @@ if os.path.exists("lock") == False:
     
     #thermocouple.cleanup()
     os.remove("lock")
+    os.remove("terminar")
 
 #CALCULAMOS COEFICIENTE ENFRIAMENTO NEWTON
     #T(t)=Tamb+(Ti-Tamb)*e^(-r*t) 

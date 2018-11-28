@@ -78,15 +78,10 @@
 
         
         var tiempo = Date.now();
-        function addData(chart, label) {
-            
+        function addData(chart, label, data) {
+            chart.data.labels.push(label);
             chart.data.datasets.forEach((dataset) => {
-                var agregar = 0;
-                $.get("{{url_for('temp_term')}}", function(result){
-                    chart.data.labels.push(label);
-                    dataset.data.push( result );
-                    updateCoefficient( result )
-                });
+                dataset.data.push( data );
             });
             chart.update();
         }
@@ -101,38 +96,18 @@
             }
         }
 
-        var pause = false;
-        function pausarExperimento(){
-            if(pause == false)
-            {
-                pause = true;
-                document.getElementById("boton_pausa").innerHTML= "Reanudar";
-            }
-            else
-            {
-                pause = false;
-                document.getElementById("boton_pausa").innerHTML= "Pausar";
-            }
-        }
-
-        var cont = 0;
-        var contador = 0;
-        setInterval(function(){
-            if(cont > 216000)
-            {
-                location.reload();
-            }
-            cont += 0.5;      
-            if(pause == false){     
-                var mLabel = ""
-                if(cont % 10 == 0){
-                    mLabel = cont;
-                }
-                addData( myChart, mLabel);
-                contador += 1;
-            }
-            else return;
-            
+        setInterval(function(){                
+	$.get("{{url_for('temp_term')}}", function(result){
+		if(result != 0){
+		updateCoefficient( result );
+		var mLabel = "";
+		var tiempoAux = Math.floor((Date.now()-tiempo)/1000);
+		if(tiempoAux % 15 == 0){
+			mLabel = tiempoAux/60;
+		}
+		addData(myChart, mLabel, result);
+		}
+		});                
         }, 500);
     </script>
 {% endblock %}
