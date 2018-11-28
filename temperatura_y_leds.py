@@ -4,8 +4,8 @@ import numpy
 from max6675 import MAX6675
 import RPi.GPIO as GPIO
 
-os.remove("lock")
-os.remove("terminar")
+os.remove("~/calorimetro/lock")
+os.remove("~/calorimetro/terminar")
 #------INICIALIZAMOS TERMOMETRO------
 cs_pin = 13 #chip select
 clock_pin = 11
