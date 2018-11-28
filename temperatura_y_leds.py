@@ -5,8 +5,11 @@ from max6675 import MAX6675
 import RPi.GPIO as GPIO
 import os
 
-os.remove("~/calorimetro/lock")
-os.remove("~/calorimetro/terminar")
+if os.path.exists("/home/pi/calorimetro/lock") == True:
+    os.remove("/home/pi/calorimetro/lock")
+if os.path.exists("/home/pi/calorimetro/terminar") == True:
+    os.remove("/home/pi/calorimetro/terminar")
+
 #------INICIALIZAMOS TERMOMETRO------
 cs_pin = 13 #chip select
 clock_pin = 11
