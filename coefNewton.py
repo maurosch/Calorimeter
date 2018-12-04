@@ -34,6 +34,9 @@ if os.path.exists("lock") == False:
     ejeTiempo = []
     tiempoInicio = time.time()
 
+    temp_material.append(temp_ambiente)
+    ejeTiempo.append(0)
+
     temp_str = obtenerTemp()
 
     relayNumberIN = 18
@@ -43,7 +46,7 @@ if os.path.exists("lock") == False:
     if temp_str < temp_inicial_material:
         GPIO.output(relayNumberIN, GPIO.LOW)
 
-    while temp_str < temp_inicial_material and temp_str < 200 and os.path.exists("terminar") == False:
+    while temp_str+5 < temp_inicial_material and temp_str < 200 and os.path.exists("terminar") == False:
         temp_str = obtenerTemp()
         time.sleep(0.5)
         temp_material.append(float(temp_str))
