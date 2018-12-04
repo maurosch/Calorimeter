@@ -66,6 +66,9 @@ if os.path.exists("lock") == False:
         temp_material.append(float(temp_str))
         ejeTiempo.append(time.time()-tiempoInicio)
         time.sleep(0.5)
+        
+    os.remove("lock")
+    os.remove("terminar")
 
     tiempoTranscurrido = time.time() - tiempoInicio
     coefEnfriamiento = log(temp_inicial_material-temp_ambiente) / tiempoTranscurrido
@@ -80,8 +83,7 @@ if os.path.exists("lock") == False:
     #----------------TERMINAMOS EL EXPERIMENTO----------------
     
     #thermocouple.cleanup()
-    os.remove("lock")
-    os.remove("terminar")
+    
 
 #CALCULAMOS COEFICIENTE ENFRIAMENTO NEWTON
     #T(t)=Tamb+(Ti-Tamb)*e^(-r*t) 
