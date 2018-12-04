@@ -6,7 +6,6 @@
 
 {% block content %}
 
-
 <div class="row justify-content-center">
     <div class="col-sm-12">
         <div class="card card-primary">
@@ -18,8 +17,8 @@
                     {% for experimento in experimentos_pasados %}
                     <li> {{experimento}}
                     <div style="margin: 10px">     
-                        <a href="{{ url_for('static', filename='plots_pdf/enfriamiento/'+experimento+'.pdf') }}">PDF</a></br>
-                        <a href="{{ url_for('static', filename='plots_csv/enfriamiento/'+experimento+'.csv') }}">CSV</a></br>
+                        <a href="{{ url_for('verPDF')+'?file='+experimento }}" style="margin-right: 20px;">PDF</a>
+                        <a href="{{ url_for('static', filename='plots_csv/enfriamiento/'+experimento+'.csv') }}">CSV</a>
                     </div>
                     </li>
                     {% endfor %}
@@ -32,9 +31,5 @@
     </div>
 </div>
 
-    
-        
-        
-    
 {% endblock %}
 

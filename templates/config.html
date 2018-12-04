@@ -10,7 +10,7 @@
     <form action="config" method="POST">
         <div class="card card-primary">
             <div class="card-header">
-                <h5 class="card-title">Configuración</h5> 
+                <h5 class="card-title">Configuración {% if errorText %}({{errorText}}){% endif %}</h5> 
             </div>
             <div class="card-body"> 
                     <div class="form-group row justify-content-center">

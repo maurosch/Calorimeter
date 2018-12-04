@@ -68,24 +68,32 @@ def enfriamiento_resultados():
 @app.route('/enfriamiento/config', methods=['POST', 'GET'])
 def enfriamiento_config():
     text = ""
+    errorText = ""
     if request.method == 'POST':
-        config = configparser.ConfigParser()
-        config['DEFAULT'] = {'temp_inicial_material': request.form['temp_inicial_material'], 'temp_ambiente':request.form['temp_ambiente']}
-        with open('config.txt', 'w') as configfile:
-            config.write(configfile)
-        return redirect(url_for('enfriamiento_start'))
-    
+        if request.form['temp_inicial_material'] > request.form['temp_ambiente']:            
+            config = configparser.ConfigParser() 
+            config['DEFAULT'] = {'temp_inicial_material': request.form['temp_inicial_material'], 'temp_ambiente':request.form['temp_ambiente']}
+            with open('config.txt', 'w') as configfile:
+                config.write(configfile)
+            return redirect(url_for('enfriamiento_start'))
+        errorText = "La temperatura ambiente no puede ser mayor que la deseada del material"
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
 
-    return render_template('config.html', text=text, configCalorimetro=configCalorimetro)
 
+
+    return render_template('config.html', text=text, configCalorimetro=configCalorimetro, errorText=errorText)
 
 @app.route('/terminarExperimento')
 def terminarExperimento():
     file = open('terminar','w')
     file.close()    
     return render_template('analizar.html')
+
+@app.route('/enfriamiento/resultados/verPDF')
+def verPDF():
+    experimento = request.args.get('file')
+    return render_template('verPDF.html', experimento=experimento)
 
 #--------------------PAGINAS CALORIMETRO (NO LAS USAMOS)--------------------
 '''

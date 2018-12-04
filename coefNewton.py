@@ -30,16 +30,10 @@ if os.path.exists("lock") == False:
     temp_ambiente = configCalorimetro['DEFAULT']['temp_ambiente']
     temp_ambiente = float(temp_ambiente)
     
-    #------INICIALIZAMOS TERMOMETRO------
-    #cs_pin = 4 #chip select
-    #clock_pin = 24
-    #data_pin = 25
-    #units = "c"
-    #thermocouple = MAX6675(cs_pin, clock_pin, data_pin, units)
-    #------------------------------------
+    temp_material = []  
+    ejeTiempo = []
+    tiempoInicio = time.time()
 
-    #----------CALENTAMOS PIEZA----------
-    #tc = thermocouple.get()
     temp_str = obtenerTemp()
 
     relayNumberIN = 18
@@ -52,15 +46,11 @@ if os.path.exists("lock") == False:
     while temp_str < temp_inicial_material and temp_str < 200 and os.path.exists("terminar") == False:
         temp_str = obtenerTemp()
         time.sleep(0.5)
+        temp_material.append(float(temp_str))
+        ejeTiempo.append(time.time()-tiempoInicio)
 
     GPIO.setup(relayNumberIN, GPIO.IN)
-    #------------------------------------
-
-    #---EMPEZAMOS EXPERIMENTO---
-    tiempoInicio = time.time()
-    #temp_ambiente = []
-    temp_material = []  
-    ejeTiempo = []
+      
     while os.path.exists("terminar") == False: 
         temp_str = obtenerTemp()
         temp_material.append(float(temp_str))
@@ -71,7 +61,8 @@ if os.path.exists("lock") == False:
     os.remove("terminar")
 
     tiempoTranscurrido = time.time() - tiempoInicio
-    coefEnfriamiento = log(temp_inicial_material-temp_ambiente) / tiempoTranscurrido
+    if temp_inicial_material > temp_ambiente:
+        coefEnfriamiento = log(temp_inicial_material-temp_ambiente) / tiempoTranscurrido 
 
     #GUARDAMOS DATOS
     df = pd.DataFrame({'Temperatura Material':temp_material}, ejeTiempo)
@@ -80,11 +71,3 @@ if os.path.exists("lock") == False:
     plot = df.plot(style="*-", ylim={0,200})
     #plot.annotate('Calor Especifico', xy=(-12, -12), xycoords='axes points', size=14, ha='right', va='top', bbox=dict(boxstyle='round', fc='w'))
     plot.get_figure().savefig('static/plots_pdf/enfriamiento/'+nombre+'.pdf', format='pdf')
-    #----------------TERMINAMOS EL EXPERIMENTO----------------
-    
-    #thermocouple.cleanup()
-    
-
-#CALCULAMOS COEFICIENTE ENFRIAMENTO NEWTON
-    #T(t)=Tamb+(Ti-Tamb)*e^(-r*t) 
-    #(T-Tamb)/(Ti-Tamb)=e^(-r*t)
