@@ -86,13 +86,19 @@
             });
             chart.update();
         }
-
+        var temp_max = -200;
+        var tiempoMaximo;
         function updateCoefficient(temp_actual){
             var temp_inicial_material = {{ configCalorimetro['DEFAULT']['temp_inicial_material'] }};
             var temp_ambiente = {{ configCalorimetro['DEFAULT']['temp_ambiente'] }};
+            if(temp_max < temp_actual)
+            {
+                temp_max = temp_actual;
+                tiempoMaximo = Date.now();
+            }
             if(temp_actual - temp_ambiente > 5)
             {
-                var coeficiente_newton = Math.log(temp_inicial_material-temp_ambiente)/((Date.now()-tiempo)/1000);          
+                var coeficiente_newton = Math.log(temp_max-temp_ambiente)/((tiempoMaximo-tiempo)/1000);          
                 document.getElementById("coeficiente_newton_id").innerHTML = coeficiente_newton.toFixed(2) + " s<sup>-1</sup>";
             }
         }
