@@ -18,7 +18,7 @@
                     <li> {{experimento}}
                     <div style="margin: 10px">     
                         <a href="{{ url_for('verPDF')+'?file='+experimento }}" style="margin-right: 20px;">PDF</a>
-                        <a href="{{ url_for('static', filename='plots_csv/enfriamiento/'+experimento+'.csv') }}">CSV</a>
+                        <a href="{{ url_for('static', filename='plots/'+experimento+'.csv') }}">CSV</a>
                     </div>
                     </li>
                     {% endfor %}

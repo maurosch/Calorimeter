@@ -13,7 +13,7 @@
                 <h5 class="card-title">{{experimento}}</h5> 
             </div>
             <div class="card-body" style="height:340px;"> 
-                    <iframe id="iframepdf" width=100% height=320px src="{{ url_for('static', filename='plots_pdf/enfriamiento/'+experimento+'.pdf') }}"></iframe>
+                    <iframe id="iframepdf" width=100% height=320px src="{{ url_for('static', filename='plots/'+experimento+'.pdf') }}"></iframe>
             </div>
             <div class="card-footer">
                 <a href="{{url_for('enfriamiento_resultados')}}" class="btn btn-secondary">Volver</a>

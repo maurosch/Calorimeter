@@ -6,11 +6,29 @@ from flask import url_for
 import configparser
 import os
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, splitext
 from subprocess import Popen
 import subprocess
 import socket
+from multiprocessing import Process, Event
+import temperatura_y_leds
+import coefNewton
 #from gpiozero import LED, Button
+
+# Inicio de experimento. Liberarlo implica que corre el experimento
+start_event = Event()
+
+# Fin del experimento. Liberarlo, luego de iniciar el experimento termina el experimento
+end_event = Event()
+
+# Subprocesos. Usando multiprocessing son procesos python separados que pueden ser sincronizados
+temp_process = Process(target=temperatura_y_leds.main)
+coef_exp_process = Process(target=coefNewton.main,
+                              args=(start_event, end_event))
+
+# Antes de iniciar todo, levanto los procesos
+temp_process.start()
+coef_exp_process.start()
 
 app = Flask(__name__)
 
@@ -34,6 +52,8 @@ def inicio():
 
 @app.route('/shutdown')
 def shutdown():
+    temp_process.join()
+    coef_exp_process.join()
     os.system("sudo shutdown -h now")
     return "APAGADO"
 
@@ -54,15 +74,14 @@ def index_enfriamiento():
 def enfriamiento_start():
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
-    p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    start_event.set()
+    #p = subprocess.Popen(["python", 'coefNewton.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return render_template('grafico.html', configCalorimetro=configCalorimetro, ip_addr=get_ip())
 
 @app.route('/enfriamiento/resultados')
 def enfriamiento_resultados():
-    mypath = 'static/plots_pdf/enfriamiento'
-    experimentos_pasados = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-    for i in range(len(experimentos_pasados)):
-        experimentos_pasados[i] = experimentos_pasados[i].split('.', 1)[0]
+    mypath = 'static/plots'
+    experimentos_pasados = set([splitext(f)[0] for f in listdir(mypath) if isfile(join(mypath, f))])
     return render_template('resultados.html', experimentos_pasados=experimentos_pasados)
 
 @app.route('/enfriamiento/config', methods=['POST', 'GET'])
@@ -79,15 +98,13 @@ def enfriamiento_config():
         errorText = "La temperatura ambiente no puede ser mayor que la deseada del material"
     configCalorimetro = configparser.ConfigParser()
     configCalorimetro.read('config.txt')
-
-
-
     return render_template('config.html', text=text, configCalorimetro=configCalorimetro, errorText=errorText)
 
 @app.route('/terminarExperimento')
 def terminarExperimento():
-    file = open('terminar','w')
-    file.close()    
+    end_event.set()
+    start_event.clear()
+    #open('terminar','a').close()
     return render_template('analizar.html')
 
 @app.route('/enfriamiento/resultados/verPDF')
@@ -111,7 +128,7 @@ def calor_especifico_start():
 
 @app.route('/calor_especifico/resultados')
 def calor_especifico_resultados():
-    mypath = 'static/plots_pdf/calor_especifico'
+    mypath = 'static/plots'
     experimentos_pasados = [f for f in listdir(mypath) if isfile(join(mypath, f))]
     for i in range(len(experimentos_pasados)):
         experimentos_pasados[i] = experimentos_pasados[i].split('.', 1)[0]
@@ -129,3 +146,6 @@ def calor_especifico_config():
     return render_template('config.html', text=text)
 '''
 #---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+   app.run(host="0.0.0.0")
